@@ -11,16 +11,17 @@ from utils import preprocessing
 class TFS(preprocessing):
     def __init__(self, dataset_name, fs1, fs2, alpha, beta, gamma,  k_neigh= 5, sigma= 1000, MaxIter= 5, for_convergence= False):
         super().__init__(dataset_name, k_neigh, sigma)
-        self.I_1, self.I_2, self.I_3 = list(map(lambda x: int(x), self.X.shape))
-        self.A_1, self.B_1, self.L_1 = self.knn_graph(mode= 1)
-        self.A_2, self.B_2, self.L_2 = self.knn_graph(mode= 2)
-        self.X_1, self.X_2 = self.X_1.to('cuda'), self.X_2.to('cuda')
-        self.fs1, self.fs2 = fs1, fs2
+        self.I_1, self.I_2, self.I_3 = list(map(lambda x: int(x), self.X.shape)) # Tensor Data Dimensions
+        self.A_1, self.B_1, self.L_1 = self.knn_graph(mode= 1) # Weight, Degree, and Laplacian Matrices Associated to Mode-1
+        self.A_2, self.B_2, self.L_2 = self.knn_graph(mode= 2) # Weight, Degree, and Laplacian Matrices Associated to Mode-2
+        self.X_1, self.X_2 = self.X_1.to('cuda'), self.X_2.to('cuda') # Mode-1 and Mode-2 Unfoldings of Tensor data
+        self.fs1, self.fs2 = fs1, fs2 # Number of Selected Slices along Mode-1 and Mode-2, Respectively
+        # Initialization
         self.W_1 = torch.rand((self.fs1, self.I_1), device= 'cuda')
         self.W_2 = torch.rand((self.fs2, self.I_2), device= 'cuda')
         self.H_1 = torch.rand((self.I_1, self.fs1), device= 'cuda')
         self.H_2 = torch.rand((self.I_2, self.fs2), device= 'cuda')
-        self.MaxIter, self.alpha, self.beta, self.gamma = MaxIter, alpha, beta, gamma
+        self.MaxIter, self.alpha, self.beta, self.gamma = MaxIter, alpha, beta, gamma # Hyperparameters
         self.dataset_name = dataset_name
         self.for_convergence = for_convergence
         self.convergence_arr = torch.zeros(self.MaxIter, dtype= torch.float32)
