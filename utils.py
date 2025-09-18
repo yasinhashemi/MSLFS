@@ -7,22 +7,26 @@ tl.set_backend('pytorch')
 
 class preprocessing:
     def __init__(self, dataset_name, k_neigh, sigma):
+        # Loading Data
         data = loadmat(f"C:\\Users\\Kavoosh\\Desktop\\Reshaped_Data\\Reshaped_Datasets\\{dataset_name}.mat")
         self.X = torch.tensor(data['X'], dtype= torch.float32)
 
+        # Normalizing Data
         if self.X.max() > 1:
             self.X /= self.X.max()
 
     
-        self.X_1 = tl.unfold(self.X, mode= 0)
-        self.X_2 = tl.unfold(self.X, mode= 1)
-        self.X_3 = tl.unfold(self.X, mode= 2)
+        self.X_1 = tl.unfold(self.X, mode= 0) # Mode-1 Unfolding
+        self.X_2 = tl.unfold(self.X, mode= 1) # Mode-2 Unfolding
+        self.X_3 = tl.unfold(self.X, mode= 2) # Mode-3 Unfolding
 
+        # Processing Labels
         self.Y = torch.tensor(data['Y']).ravel() - 1 if data['Y'].min() > 0 else torch.tensor(data['Y']).ravel()
-        self.labels_num = self.Y.unique().numel()
-        self.k_neigh = k_neigh
-        self.sigma = sigma
+        self.labels_num = self.Y.unique().numel() # Number of Clusters
+        self.k_neigh = k_neigh # Number of k-Nearest Neighbors
+        self.sigma = sigma # Band Width of Heat Kernel
 
+    # Construction of k_Nearest Neighbor Graph
     def knn_graph(self, mode):
         if mode == 1:
             X_ = self.X_1
