@@ -16,3 +16,4 @@ pandas
 matplotlib
 sklearn
 tensorly
+faiss
