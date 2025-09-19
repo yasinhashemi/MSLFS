@@ -6,5 +6,13 @@ In this work, we introduce Multi-linear Subspace Learning Feature Selection (MSL
 
 This repository provides an implementation for the MSLFS (Multi-linear Subspace Learning Feature Selection).
 
+## Requirements
+
 ```bash
-pip install -r requirements.txt
+torch
+numpy
+scipy
+pandas
+matplotlib
+sklearn
+tensorly
